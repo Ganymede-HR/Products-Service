@@ -21,28 +21,7 @@ const productSchema = new mongoose.Schema({
   related_products: [Number]
 })
 
-const styleSchema = new mongoose.Schema({
-  name: String,
-  original_price: Number,
-  sale_price: Number,
-  default?: { type: Boolean, default: false },
-  photos: [
-    {
-      thumbnail_url: String,
-      url: String
-    }
-  ],
-  skus: [
-    {
-      _id: mongoose.Schema.Types.ObjectId,
-      quantity: Number,
-      size: String
-    }
-  ]
-});
 
 const Product = new mongoose.model('Product', productSchema);
-const Style = new mongoose.model('Style', styleSchema)
 
-module.exports.product = Product;
-module.exports.style = Style;
+module.exports = Product;
