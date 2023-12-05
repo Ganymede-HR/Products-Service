@@ -25,7 +25,7 @@ const styleSchema = new mongoose.Schema({
   name: String,
   original_price: Number,
   sale_price: Number,
-  default: { type: Boolean, default: false },
+  default?: { type: Boolean, default: false },
   photos: [
     {
       thumbnail_url: String,
