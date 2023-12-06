@@ -1,17 +1,16 @@
-CREATE DATABASE sdc;
+CREATE DATABASE sdc_products;
 
-USE sdc;
+USE sdc_products;
 
 DROP TABLE IF EXISTS products;
 
 CREATE TABLE products (
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  productId INTEGER,
   item_name TEXT,
   slogan TEXT,
   item_description TEXT,
   category VARCHAR(100),
-  default_price VARCHAR(6)
+  default_price INTEGER
 );
 
 DROP TABLE IF EXISTS features;
@@ -20,8 +19,8 @@ CREATE TABLE features (
   id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL,
   feature TEXT,
   item_value TEXT,
-  productId INTEGER,
-    FOREIGN KEY (productId)
+  product_id INTEGER,
+    FOREIGN KEY (product_id)
       REFERENCES products (id)
 );
 
@@ -29,8 +28,8 @@ DROP TABLE IF EXISTS styles;
 
 CREATE TABLE styles (
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  productId INTEGER,
-    FOREIGN KEY (productId)
+  product_id INTEGER,
+    FOREIGN KEY (product_id)
       REFERENCES products (id),
   style_name TEXT,
   sale_price VARCHAR(6),
@@ -66,11 +65,11 @@ DROP TABLE IF EXISTS related_products;
 
 CREATE TABLE related_products (
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  productId INTEGER,
-    FOREIGN KEY (productId)
+  product_id INTEGER,
+    FOREIGN KEY (product_id)
       REFERENCES products (id),
   related_product_id INTEGER,
-    FOREIGN KEY (productId)
+    FOREIGN KEY (product_id)
       REFERENCES products (id)
 );
 
@@ -85,7 +84,7 @@ CREATE TABLE related_products (
 -- ALTER TABLE related_products ADD FOREIGN KEY (productId) REFERENCES products (id);
 -- ALTER TABLE related_products ADD FOREIGN KEY (related_product_id) REFERENCES products (id);
 
--- ---
+-- -
 -- Table Properties
 -- ---
 
@@ -96,19 +95,54 @@ CREATE TABLE related_products (
 -- ALTER TABLE `skus` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 -- ALTER TABLE `related_products` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- ---
--- Test Data
--- ---
 
--- INSERT INTO `products` (`id`,`name`,`slogan`,`description`,`category`,`default_price`) VALUES
--- ('','','','','','');
--- INSERT INTO `features` (`id`,`feature`,`value`,`products_table_id`) VALUES
--- ('','','','');
--- INSERT INTO `styles` (`id`,`style_id`,`name`,`original_price`,`sale_price`,`photos`,`default`,`product_id`) VALUES
--- ('','','','','','','','');
--- INSERT INTO `styles_photos` (`id`,`thumbnail_url`,`url`,`style_id`) VALUES
--- ('','','','');
--- INSERT INTO `skus` (`id`,`quantity`,`size`,`product_id`) VALUES
--- ('','','','');
--- INSERT INTO `related_products` (`id`,`product_id`,`related_product_id`) VALUES
--- ('','','');
+-- ---
+-- Seed Database
+-- You will need to enable MYSQL VAR LOCAL_INFILE in order for this command to work.
+-- SET GLOBAL local_infile = 'ON';
+-- Be sure to list absolute path
+-- Optionally, you can place the files in a specific directory if you wish to load the data without
+-- the local flag.  You must edit my.cnf to sidestep
+-- ---
+LOAD DATA LOCAL INFILE '/Users/malloryburke/hack/rfp2310/ganymede/Products-Service/database/data/product.csv'
+INTO TABLE products
+FIELDS TERMINATED BY ','
+OPTIONALLY ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS; -- Ignore headers
+(item_name, slogan, item_description, category, default_price)
+
+-- LOAD DATA LOCAL INFILE '/Users/malloryburke/hack/rfp2310/ganymede/Products-Service/database/data/features.csv'
+-- INTO TABLE features
+-- FIELDS TERMINATED BY ','
+-- OPTIONALLY ENCLOSED BY '"'
+-- LINES TERMINATED BY '\n'
+-- IGNORE 1 ROWS; -- Ignore headers
+
+-- LOAD DATA LOCAL INFILE '/Users/malloryburke/hack/rfp2310/ganymede/Products-Service/database/data/styles.csv'
+-- INTO TABLE styles
+-- FIELDS TERMINATED BY ','
+-- OPTIONALLY ENCLOSED BY '"'
+-- LINES TERMINATED BY '\n'
+-- IGNORE 1 ROWS; -- Ignore headers
+
+-- LOAD DATA LOCAL INFILE '/Users/malloryburke/hack/rfp2310/ganymede/Products-Service/database/data/photos.csv'
+-- INTO TABLE photos
+-- FIELDS TERMINATED BY ','
+-- OPTIONALLY ENCLOSED BY '"'
+-- LINES TERMINATED BY '\n'
+-- IGNORE 1 ROWS; -- Ignore headers
+
+-- LOAD DATA LOCAL INFILE '/Users/malloryburke/hack/rfp2310/ganymede/Products-Service/database/data/skus.csv'
+-- INTO TABLE skus
+-- FIELDS TERMINATED BY ','
+-- OPTIONALLY ENCLOSED BY '"'
+-- LINES TERMINATED BY '\n'
+-- IGNORE 1 ROWS; -- Ignore headers
+
+-- LOAD DATA LOCAL INFILE '/Users/malloryburke/hack/rfp2310/ganymede/Products-Service/database/data/related.csv'
+-- INTO TABLE related_products
+-- FIELDS TERMINATED BY ','
+-- OPTIONALLY ENCLOSED BY '"'
+-- LINES TERMINATED BY '\n'
+-- IGNORE 1 ROWS; -- Ignore headers
