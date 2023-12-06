@@ -55,7 +55,7 @@ DROP TABLE IF EXISTS skus;
 CREATE TABLE skus (
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
   quantity INTEGER,
-  size VARCHAR(1),
+  size VARCHAR(3),
   styleId INTEGER,
     FOREIGN KEY (styleId)
       REFERENCES styles (id)
@@ -94,55 +94,3 @@ CREATE TABLE related_products (
 -- ALTER TABLE `styles_photos` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 -- ALTER TABLE `skus` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 -- ALTER TABLE `related_products` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-
--- ---
--- Seed Database
--- You will need to enable MYSQL VAR LOCAL_INFILE in order for this command to work.
--- SET GLOBAL local_infile = 'ON';
--- Be sure to list absolute path
--- Optionally, you can place the files in a specific directory if you wish to load the data without
--- the local flag.  You must edit my.cnf to sidestep
--- ---
-LOAD DATA LOCAL INFILE '/Users/malloryburke/hack/rfp2310/ganymede/Products-Service/database/data/product.csv'
-INTO TABLE products
-FIELDS TERMINATED BY ','
-OPTIONALLY ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 ROWS; -- Ignore headers
-(item_name, slogan, item_description, category, default_price)
-
--- LOAD DATA LOCAL INFILE '/Users/malloryburke/hack/rfp2310/ganymede/Products-Service/database/data/features.csv'
--- INTO TABLE features
--- FIELDS TERMINATED BY ','
--- OPTIONALLY ENCLOSED BY '"'
--- LINES TERMINATED BY '\n'
--- IGNORE 1 ROWS; -- Ignore headers
-
--- LOAD DATA LOCAL INFILE '/Users/malloryburke/hack/rfp2310/ganymede/Products-Service/database/data/styles.csv'
--- INTO TABLE styles
--- FIELDS TERMINATED BY ','
--- OPTIONALLY ENCLOSED BY '"'
--- LINES TERMINATED BY '\n'
--- IGNORE 1 ROWS; -- Ignore headers
-
--- LOAD DATA LOCAL INFILE '/Users/malloryburke/hack/rfp2310/ganymede/Products-Service/database/data/photos.csv'
--- INTO TABLE photos
--- FIELDS TERMINATED BY ','
--- OPTIONALLY ENCLOSED BY '"'
--- LINES TERMINATED BY '\n'
--- IGNORE 1 ROWS; -- Ignore headers
-
--- LOAD DATA LOCAL INFILE '/Users/malloryburke/hack/rfp2310/ganymede/Products-Service/database/data/skus.csv'
--- INTO TABLE skus
--- FIELDS TERMINATED BY ','
--- OPTIONALLY ENCLOSED BY '"'
--- LINES TERMINATED BY '\n'
--- IGNORE 1 ROWS; -- Ignore headers
-
--- LOAD DATA LOCAL INFILE '/Users/malloryburke/hack/rfp2310/ganymede/Products-Service/database/data/related.csv'
--- INTO TABLE related_products
--- FIELDS TERMINATED BY ','
--- OPTIONALLY ENCLOSED BY '"'
--- LINES TERMINATED BY '\n'
--- IGNORE 1 ROWS; -- Ignore headers
