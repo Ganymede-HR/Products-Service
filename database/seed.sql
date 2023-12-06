@@ -19,7 +19,7 @@ FIELDS TERMINATED BY ','
 OPTIONALLY ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES; -- Ignore headers
-(productId,feature,item_value);
+(product_id,feature,item_value);
 
 LOAD DATA LOCAL INFILE '/Users/malloryburke/hack/rfp2310/ganymede/Products-Service/database/data/styles.csv'
 INTO TABLE styles
@@ -27,7 +27,7 @@ FIELDS TERMINATED BY ','
 OPTIONALLY ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES; -- Ignore headers
-(id, productId,style_name,salePrice,originalPrice,default_style);
+(id, product_id,style_name,sale_price,original_price,default_style);
 
 LOAD DATA LOCAL INFILE '/Users/malloryburke/hack/rfp2310/ganymede/Products-Service/database/data/photos.csv'
 INTO TABLE photos
@@ -51,4 +51,4 @@ FIELDS TERMINATED BY ','
 OPTIONALLY ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES; -- Ignore headers
-(id, productId, related_product_id);
+(id, product_id, related_product_id);
