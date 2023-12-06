@@ -1,5 +1,10 @@
-require('dotenv').config();
-const mongoose = require('mongoose');
+const mysql = require('mysql2');
 
-module.exports = mongoose.connect(`mongodb://localhost:27017/${process.env.DB_NAME}`)
-  .then(() => console.log('Database connected'));
+const db = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
+});
+
+module.exports = db;
