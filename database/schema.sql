@@ -21,7 +21,7 @@ CREATE TABLE features (
     FOREIGN KEY (product_id)
       REFERENCES products (product_id),
   feature TEXT,
-  item_value TEXT
+  value TEXT
 );
 
 DROP TABLE IF EXISTS styles;
