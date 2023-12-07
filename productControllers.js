@@ -1,6 +1,6 @@
 const db = require('./database/index');
 
-const getProducts = (page = 1, count = 5) => new Promise((resolve, reject), () => {
+const getProducts = (page = 1, count = 5) => new Promise((resolve, reject) => {
   const query = `SELECT * FROM PRODUCTS LIMIT ? OFFSET ?`;
   db.query(query, [count, page], (err, results) => {
     if (err) {
@@ -11,7 +11,7 @@ const getProducts = (page = 1, count = 5) => new Promise((resolve, reject), () =
   });
 });
 
-const getProductInfo = (id) => new Promise((resolve, reject), () => {
+const getProductInfo = (id) => new Promise((resolve, reject) => {
   const query = `SELECT * FROM products JOIN features ON products.product_id = features.product_id WHERE products.product_id = ?`;
   db.query(query, [id], (err, results) => {
     if (err) {
@@ -22,7 +22,7 @@ const getProductInfo = (id) => new Promise((resolve, reject), () => {
   });
 });
 
-const getStyles = (id) => new Promise((resolve, reject), () => {
+const getStyles = (id) => new Promise((resolve, reject) => {
   const query = `SELECT * FROM styles JOIN skus ON styles.product_id = skus.productId WHERE styles.product_id = ?`
   db.query(query, [id], (err, results) => {
     if (err) {
@@ -33,7 +33,7 @@ const getStyles = (id) => new Promise((resolve, reject), () => {
   });
 });
 
-const getRelatedProducts = (id) => {
+const getRelatedProducts = (id) => new Promise((resolve, reject) => {
   const query = `SELECT * FROM related_products WHERE product_id = ?`;
   db.query(query, [id], (err, results) => {
     if (err) {
@@ -42,7 +42,7 @@ const getRelatedProducts = (id) => {
       resolve(results);
     }
   });
-};
+});
 
 module.exports = {
   getProducts, getProductInfo, getStyles, getRelatedProducts,
