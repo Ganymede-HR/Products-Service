@@ -1,4 +1,4 @@
-<img alt="Static Badge" src="https://img.shields.io/badge/JavaScript?style=flat-square&logo=javascript&logoColor=black&link=https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FWeb%2FJavaScript">
+<img src="https://img.shields.io/badge/JavaScript?style=flat-square&logo=javascript&logoColor=black">
 <img alt="Static Badge" src="https://img.shields.io/badge/Express.js?style=flat-square&logo=express&logoColor=black">
 <img alt="Static Badge" src="https://img.shields.io/badge/Jest?style=flat-square&logo=jest&logoColor=white">
 
