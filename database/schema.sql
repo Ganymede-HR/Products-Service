@@ -27,7 +27,7 @@ CREATE TABLE features (
 DROP TABLE IF EXISTS styles;
 
 CREATE TABLE styles (
-  id INTEGER PRIMARY KEY,
+  style_id INTEGER PRIMARY KEY,
   product_id INTEGER,
     FOREIGN KEY (product_id)
       REFERENCES products (product_id),

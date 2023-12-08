@@ -2,7 +2,7 @@ const { Router } = require('express');
 
 const productRouter = Router();
 const {
-  getProducts, getProductInfo, getStyles, getRelatedProducts,
+  getProducts, getProductInfo, getStyles, getRelatedProducts, getSkus, getPhotos,
 } = require('./productControllers');
 
 productRouter.get('/', (req, res) => {
@@ -23,8 +23,10 @@ productRouter.get('/:product_id', (req, res) => {
 });
 
 productRouter.get('/:product_id/styles', (req, res) => {
-  const { id } = req.params;
+  const id = req.params.product_id;
   getStyles(id)
+    .then((results) => getSkus(id, results))
+    .then((results) => getPhotos(id, results))
     .then((results) => res.status(200).json(results))
     .catch(() => res.sendStatus(404));
 });

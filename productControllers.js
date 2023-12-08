@@ -45,13 +45,72 @@ const getProductInfo = (id) => new Promise((resolve, reject) => {
     });
 });
 
+const getSkus = (id, styleRes) => new Promise((resolve, reject) => {
+  const skus = {};
+
+  const query = `SELECT id, quantity, size FROM skus WHERE skus.product_id = ?`
+
+  db.query(query, [id], (err, results) => {
+    if (err) {
+      reject(err);
+    } else if (results.length > 0) {
+      results.forEach((result) => {
+        skus[result.id] = {
+          quantity: result.quantity,
+          size: result.size,
+        };
+      });
+    }
+
+    styleRes.results.forEach((result) => {
+      result.skus = skus;
+    });
+
+    resolve(styleRes);
+  });
+});
+
+const getPhotos = (id, skuResults) => new Promise((resolve, reject) => {
+  const styleIds = skuResults.results.map((item) => item.id);
+  const promises = [];
+
+  styleIds.forEach((item, index) => {
+    const query = `SELECT thumbnail_url, url FROM photos WHERE photos.style_id = ?`
+    const promise = new Promise((innerResolve, innerReject) => {
+      db.query(query, [id], (err, data) => {
+        if (err) {
+          innerReject(err);
+        } else {
+          skuResults.results[index].photos = data;
+          innerResolve();
+        }
+      });
+    });
+    promises.push(promise);
+  });
+
+  Promise.all(promises)
+    .then(() => {
+      resolve(skuResults);
+    })
+    .catch((err) => {
+      reject(err);
+    });
+});
+
 const getStyles = (id) => new Promise((resolve, reject) => {
-  const query = `SELECT * FROM styles JOIN skus ON styles.product_id = skus.productId WHERE styles.product_id = ?`
+  const styleRes = {
+    product_id: id,
+    results: [],
+  };
+
+  const query = `SELECT id, style_name, original_price, sale_price, default_style, photos FROM styles WHERE styles.product_id = ?`
   db.query(query, [id], (err, results) => {
     if (err) {
       reject(err);
     } else {
-      resolve(results);
+      styleRes.results = results;
+      resolve(styleRes);
     }
   });
 });
@@ -68,5 +127,5 @@ const getRelatedProducts = (id) => new Promise((resolve, reject) => {
 });
 
 module.exports = {
-  getProducts, getProductInfo, getStyles, getRelatedProducts,
+  getProducts, getProductInfo, getStyles, getRelatedProducts, getSkus, getPhotos,
 };
