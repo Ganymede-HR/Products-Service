@@ -7,7 +7,7 @@ Products API Service
 
 ## Overview
 
-This service centers around providing product details data to an online retail store, utilizing RESTful API practices, and MySQL to power the
+This service centers around providing product details data to an online retail store, utilizing RESTful API practices, and MySQL.
 
 ## Getting started
 
