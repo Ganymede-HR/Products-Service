@@ -4,7 +4,7 @@ const productRouter = Router();
 
 const {
   getProducts, getProductInfo, getStyles, getRelatedProducts, getSkus, getPhotos,
-} = require('./productControllers');
+} = require('./productModels');
 
 productRouter.get('/', (req, res) => {
   const { page, count } = req.params;
