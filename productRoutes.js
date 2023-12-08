@@ -32,7 +32,7 @@ productRouter.get('/:product_id/styles', (req, res) => {
 });
 
 productRouter.get('/:product_id/related', (req, res) => {
-  const { id } = req.params;
+  const id = req.params.product_id;
   getRelatedProducts(id)
     .then((results) => res.status(200).json(results))
     .catch(() => res.sendStatus(404));
