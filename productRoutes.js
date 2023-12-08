@@ -1,6 +1,7 @@
 const { Router } = require('express');
 
 const productRouter = Router();
+
 const {
   getProducts, getProductInfo, getStyles, getRelatedProducts, getSkus, getPhotos,
 } = require('./productControllers');
