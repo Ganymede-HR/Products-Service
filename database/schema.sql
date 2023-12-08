@@ -21,13 +21,13 @@ CREATE TABLE features (
     FOREIGN KEY (product_id)
       REFERENCES products (product_id),
   feature TEXT,
-  value TEXT
+  item_value TEXT
 );
 
 DROP TABLE IF EXISTS styles;
 
 CREATE TABLE styles (
-  style_id INTEGER PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   product_id INTEGER,
     FOREIGN KEY (product_id)
       REFERENCES products (product_id),

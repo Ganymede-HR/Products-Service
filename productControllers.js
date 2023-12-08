@@ -20,7 +20,6 @@ const getProductFeatures = (id) => new Promise((resolve, reject) => {
       reject(err);
     } else if (results.length > 1) {
       results.forEach((feature) => featureArr.push(feature));
-      resolve(featureArr);
     }
     resolve(featureArr);
   });
