@@ -5,7 +5,7 @@ USE sdc_products;
 DROP TABLE IF EXISTS products;
 
 CREATE TABLE products (
-  id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  product_id INTEGER PRIMARY KEY,
   item_name TEXT,
   slogan TEXT,
   item_description TEXT,
@@ -16,21 +16,21 @@ CREATE TABLE products (
 DROP TABLE IF EXISTS features;
 
 CREATE TABLE features (
-  id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL,
-  feature TEXT,
-  item_value TEXT,
+  id INTEGER PRIMARY KEY,
   product_id INTEGER,
     FOREIGN KEY (product_id)
-      REFERENCES products (id)
+      REFERENCES products (product_id),
+  feature TEXT,
+  item_value TEXT
 );
 
 DROP TABLE IF EXISTS styles;
 
 CREATE TABLE styles (
-  id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  id INTEGER PRIMARY KEY,
   product_id INTEGER,
     FOREIGN KEY (product_id)
-      REFERENCES products (id),
+      REFERENCES products (product_id),
   style_name TEXT,
   sale_price VARCHAR(6),
   original_price VARCHAR(6),
@@ -41,36 +41,36 @@ CREATE TABLE styles (
 DROP TABLE IF EXISTS photos;
 
 CREATE TABLE photos (
-  id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  thumbnail_url TEXT,
-  url TEXT,
+  id INTEGER PRIMARY KEY,
   style_id INTEGER,
     FOREIGN KEY (style_id)
-      REFERENCES styles (id)
+      REFERENCES styles (id),
+  url TEXT,
+  thumbnail_url TEXT
 );
 
 
 DROP TABLE IF EXISTS skus;
 
 CREATE TABLE skus (
-  id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  quantity INTEGER,
-  size VARCHAR(3),
-  styleId INTEGER,
-    FOREIGN KEY (styleId)
-      REFERENCES styles (id)
+  id INTEGER PRIMARY KEY,
+  product_id INTEGER,
+    FOREIGN KEY (product_id)
+      REFERENCES products (product_id),
+  size VARCHAR(4),
+  quantity INTEGER
 );
 
 DROP TABLE IF EXISTS related_products;
 
 CREATE TABLE related_products (
-  id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  id INTEGER PRIMARY KEY,
   product_id INTEGER,
     FOREIGN KEY (product_id)
-      REFERENCES products (id),
+      REFERENCES products (product_id),
   related_product_id INTEGER,
     FOREIGN KEY (product_id)
-      REFERENCES products (id)
+      REFERENCES products (product_id)
 );
 
 -- ---
