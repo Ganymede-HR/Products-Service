@@ -10,7 +10,8 @@ module.exports = {
         node: true,
       },
       files: [
-        '.eslintrc.{js}',
+        '.eslintrc.{js
+        }',
       ],
       parserOptions: {
         sourceType: 'script',
@@ -21,7 +22,8 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  ignorePatterns: ['database/data/, database/mongodb'],
+  ignorePatterns: ['database/data/, database/mongodb'
+  ],
   rules: {
     'linebreak-style': 0,
   },

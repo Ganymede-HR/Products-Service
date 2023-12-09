@@ -20,7 +20,9 @@ productRouter.get('/:product_id', (req, res) => {
       console.log(results);
       res.status(200).json(results);
     })
-    .catch(() => res.sendStatus(404));
+    .catch((err) => {
+      res.status(404).json(err);
+    })
 });
 
 productRouter.get('/:product_id/styles', (req, res) => {

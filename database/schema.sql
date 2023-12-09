@@ -5,12 +5,12 @@ USE sdc_products;
 DROP TABLE IF EXISTS products;
 
 CREATE TABLE products (
-  product_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  item_name TEXT,
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  name TEXT,
   slogan TEXT,
-  item_description TEXT,
+  description TEXT,
   category VARCHAR(100),
-  default_price INTEGER
+  default_price TEXT
 );
 
 DROP TABLE IF EXISTS features;
@@ -19,7 +19,7 @@ CREATE TABLE features (
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
   product_id INTEGER,
     FOREIGN KEY (product_id)
-      REFERENCES products (product_id),
+      REFERENCES products (id),
   feature TEXT,
   item_value TEXT
 );
@@ -27,10 +27,10 @@ CREATE TABLE features (
 DROP TABLE IF EXISTS styles;
 
 CREATE TABLE styles (
-  id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  style_id INTEGER PRIMARY KEY AUTO_INCREMENT,
   product_id INTEGER,
     FOREIGN KEY (product_id)
-      REFERENCES products (product_id),
+      REFERENCES products (id),
   style_name TEXT,
   sale_price VARCHAR(6),
   original_price VARCHAR(6),
@@ -44,7 +44,7 @@ CREATE TABLE photos (
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
   style_id INTEGER,
     FOREIGN KEY (style_id)
-      REFERENCES styles (id),
+      REFERENCES styles (style_id),
   url TEXT,
   thumbnail_url TEXT
 );
@@ -56,7 +56,7 @@ CREATE TABLE skus (
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
   product_id INTEGER,
     FOREIGN KEY (product_id)
-      REFERENCES products (product_id),
+      REFERENCES products (id),
   size VARCHAR(4),
   quantity INTEGER
 );
@@ -67,8 +67,8 @@ CREATE TABLE related_products (
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
   product_id INTEGER,
     FOREIGN KEY (product_id)
-      REFERENCES products (product_id),
+      REFERENCES products (id),
   related_product_id INTEGER,
     FOREIGN KEY (product_id)
-      REFERENCES products (product_id)
+      REFERENCES products (id)
 );
