@@ -1,6 +1,8 @@
 const db = require('./database/index');
 
 const getProducts = (page = 0, count = 5) => new Promise((resolve, reject) => {
+  count = Number(count);
+  page = Number(page);
   const query = `SELECT * FROM PRODUCTS LIMIT ? OFFSET ?`;
   db.query(query, [count, page], (err, results) => {
     if (err) {
@@ -11,39 +13,27 @@ const getProducts = (page = 0, count = 5) => new Promise((resolve, reject) => {
   });
 });
 
-const getProductFeatures = (id) => new Promise((resolve, reject) => {
-  const featureArr = [];
-  const featuresQuery = `SELECT feature, item_value FROM features WHERE features.product_id = ?`;
-
-  db.query(featuresQuery, [id], (err, results) => {
+const getProductInfo = (id) => new Promise((resolve, reject) => {
+  db.query(`
+    SELECT products.*,
+      JSON_ARRAYAGG(JSON_OBJECT('feature', feature, 'value', item_value)) AS features
+    FROM products
+    LEFT JOIN (
+        SELECT product_id, feature, item_value
+      FROM features
+    ) AS feature_data ON products.id = feature_data.product_id
+    WHERE products.id = 1
+    GROUP BY products.id
+    `, [id], (err, results) => {
     if (err) {
       reject(err);
-    } else if (results.length > 1) {
-      results.forEach((feature) => featureArr.push(feature));
+    } else {
+      const product = results[0];
+      resolve(product);
     }
-    resolve(featureArr);
   });
 });
 
-const getProductInfo = (id) => new Promise((resolve, reject) => {
-  let featureArr = [];
-  getProductFeatures(id)
-    .then((results) => {
-      featureArr = results;
-    })
-    .then(() => {
-      const query = `SELECT * FROM products WHERE products.id = ?`;
-      db.query(query, [id], (err, results) => {
-        if (err) {
-          reject(err);
-        } else {
-          results[0].default_price = results[0].default_price.toString()
-          results[0].features = featureArr;
-          resolve(results[0]);
-        }
-      });
-    });
-});
 
 const getSkus = (id, styleRes) => new Promise((resolve, reject) => {
   const skus = {};
