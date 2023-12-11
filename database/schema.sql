@@ -35,7 +35,7 @@ CREATE TABLE styles (
   sale_price VARCHAR(6),
   original_price VARCHAR(6),
   photos INTEGER,
-  default_style TINYINT(1) DEFAULT 0
+  `default?` TINYINT(1) DEFAULT 0
 );
 
 DROP TABLE IF EXISTS photos;

@@ -1,7 +1,9 @@
 const db = require('./database/index');
 
 const getProducts = (page = 0, count = 5) => new Promise((resolve, reject) => {
-  const query = `SELECT * FROM PRODUCTS LIMIT ? OFFSET ?`;
+  count = Number(count);
+  page = Number(page);
+  const query = `SELECT * FROM products LIMIT ? OFFSET ?`;
   db.query(query, [count, page], (err, results) => {
     if (err) {
       reject(err);
@@ -11,38 +13,84 @@ const getProducts = (page = 0, count = 5) => new Promise((resolve, reject) => {
   });
 });
 
-const getProductFeatures = (id) => new Promise((resolve, reject) => {
-  const featureArr = [];
-  const featuresQuery = `SELECT feature, item_value FROM features WHERE features.product_id = ?`;
-
-  db.query(featuresQuery, [id], (err, results) => {
+const getProductInfo = (id) => new Promise((resolve, reject) => {
+  db.query(`
+    SELECT products.*,
+      JSON_ARRAYAGG(JSON_OBJECT('feature', feature, 'value', item_value)) AS features
+    FROM products
+    LEFT JOIN (
+        SELECT product_id, feature, item_value
+      FROM features
+    ) AS feature_data ON products.id = feature_data.product_id
+    WHERE products.id = 1
+    GROUP BY products.id
+    `, [id], (err, results) => {
     if (err) {
       reject(err);
-    } else if (results.length > 1) {
-      results.forEach((feature) => featureArr.push(feature));
+    } else {
+      const product = results[0];
+      resolve(product);
     }
-    resolve(featureArr);
   });
 });
 
-const getProductInfo = (id) => new Promise((resolve, reject) => {
-  let featureArr = [];
-  getProductFeatures(id)
-    .then((results) => {
-      featureArr = results;
-    })
-    .then(() => {
-      const query = `SELECT * FROM products WHERE products.id = ?`;
-      db.query(query, [id], (err, results) => {
-        if (err) {
-          reject(err);
-        } else {
-          results[0].default_price = results[0].default_price.toString()
-          results[0].features = featureArr;
-          resolve(results[0]);
-        }
-      });
+
+const getStyles2 = (id) => {
+  const resObj = {
+    product_id: `${id}`,
+    results: []
+  };
+
+  return new Promise((resolve, reject) => {
+    const defaultCol = `s.default?`;
+    db.query(`
+    SELECT
+    s.style_id,
+    s.style_name AS name,
+    s.original_price,
+    s.sale_price,
+    ??,
+      (
+        SELECT JSON_ARRAYAGG(JSON_OBJECT('thumbnail_url', thumbnail_url, 'url', url))
+        FROM photos
+        WHERE photos.style_id = s.style_id
+    ) AS photos,
+      (
+        SELECT JSON_OBJECTAGG(id, JSON_OBJECT('size', size, 'quantity', quantity))
+      FROM skus
+      WHERE skus.product_id = s.product_id
+    ) AS skus
+    FROM styles AS s
+    LEFT JOIN skus ON skus.product_id = s.product_id
+    WHERE s.product_id = ?
+    GROUP BY s.style_id, s.style_name, s.original_price, s.sale_price, ??;
+    `, [defaultCol, id, defaultCol], (err, results) => {
+      if (err) {
+        reject(err);
+      } else {
+        resObj.results = results;
+        resolve(resObj);
+      }
     });
+  });
+};
+
+const getRelatedProducts = (id) => new Promise((resolve, reject) => {
+  const relatedRes = [];
+
+  const query = `SELECT * FROM related_products WHERE product_id = ?`;
+  db.query(query, [id], (err, results) => {
+    if (err) {
+      reject(err);
+    } else {
+      if (results.length > 0) {
+        results.forEach((result) => {
+          relatedRes.push(result.related_product_id);
+        });
+      }
+      resolve(relatedRes);
+    }
+  });
 });
 
 const getSkus = (id, styleRes) => new Promise((resolve, reject) => {
@@ -103,43 +151,18 @@ const getStyles = (id) => new Promise((resolve, reject) => {
     product_id: id,
     results: [],
   };
-
-  const query = `SELECT style_id, style_name, original_price, sale_price, default_style, photos FROM styles WHERE styles.product_id = ?`
-  db.query(query, [id], (err, results) => {
+  const defaultCol = `default?`;
+  const query = `SELECT style_id, style_name, original_price, sale_price, ??, photos FROM styles WHERE styles.product_id = ?`
+  db.query(query, [defaultCol, id], (err, results) => {
     if (err) {
       reject(err);
     } else {
-      if (results.length > 0) {
-        results.forEach((result) => {
-          result.default_style = Boolean(!!result.default_style);
-          result['default?'] = result.default_style;
-          delete result.default_style;
-        });
-      }
       styleRes.results = results;
       resolve(styleRes);
     }
   });
 });
 
-const getRelatedProducts = (id) => new Promise((resolve, reject) => {
-  const relatedRes = [];
-
-  const query = `SELECT * FROM related_products WHERE product_id = ?`;
-  db.query(query, [id], (err, results) => {
-    if (err) {
-      reject(err);
-    } else {
-      if (results.length > 0) {
-        results.forEach((result) => {
-          relatedRes.push(result.related_product_id);
-        });
-      }
-      resolve(relatedRes);
-    }
-  });
-});
-
 module.exports = {
-  getProducts, getProductInfo, getStyles, getRelatedProducts, getSkus, getPhotos,
+  getProducts, getProductInfo, getStyles2, getRelatedProducts, getSkus, getPhotos, getStyles,
 };

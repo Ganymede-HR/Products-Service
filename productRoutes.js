@@ -7,23 +7,29 @@ const {
 } = require('./productModels');
 
 productRouter.get('/', (req, res) => {
-  const { page, count } = req.params;
+  const { page, count } = req.query;
   getProducts(page, count)
     .then((results) => res.status(200).json(results))
-    .catch(() => res.sendStatus(404));
+    .catch((err) => res.status(404).json(err));
 });
 
 productRouter.get('/:product_id', (req, res) => {
   const id = req.params.product_id;
   getProductInfo(id)
     .then((results) => {
-      console.log(results);
       res.status(200).json(results);
     })
     .catch((err) => {
-      res.status(404).json(err);
+      res.sendStatus(404);
     })
 });
+
+// productRouter.get('/:product_id/styles', (req, res) => {
+//   const id = req.params.product_id;
+//   getStyles(id)
+//     .then((results) => res.status(200).json(results))
+//     .catch(() => res.sendStatus(404));
+// });
 
 productRouter.get('/:product_id/styles', (req, res) => {
   const id = req.params.product_id;
@@ -31,7 +37,7 @@ productRouter.get('/:product_id/styles', (req, res) => {
     .then((results) => getSkus(id, results))
     .then((results) => getPhotos(id, results))
     .then((results) => res.status(200).json(results))
-    .catch(() => res.sendStatus(404));
+    .catch((err) => res.status(404).json(err));
 });
 
 productRouter.get('/:product_id/related', (req, res) => {
