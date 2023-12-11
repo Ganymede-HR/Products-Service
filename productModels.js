@@ -42,41 +42,38 @@ const getStyles = (id) => {
   };
 
   return new Promise((resolve, reject) => {
+    const defaultCol = `s.default?`;
     db.query(`
     SELECT
     s.style_id,
     s.style_name AS name,
     s.original_price,
     s.sale_price,
-    s.default_style,
-    (
+    ??,
+      (
         SELECT JSON_ARRAYAGG(JSON_OBJECT('thumbnail_url', thumbnail_url, 'url', url))
         FROM photos
         WHERE photos.style_id = s.style_id
     ) AS photos,
-    (
-      SELECT JSON_OBJECTAGG(id, JSON_OBJECT('size', size, 'quantity', quantity))
+      (
+        SELECT JSON_OBJECTAGG(id, JSON_OBJECT('size', size, 'quantity', quantity))
       FROM skus
       WHERE skus.product_id = s.product_id
     ) AS skus
     FROM styles AS s
     LEFT JOIN skus ON skus.product_id = s.product_id
     WHERE s.product_id = ?
-    GROUP BY s.style_id, s.style_name, s.original_price, s.sale_price, s.default_style;
-    `, [id], (err, results) => {
+    GROUP BY s.style_id, s.style_name, s.original_price, s.sale_price, ??;
+    `, [defaultCol, id, defaultCol], (err, results) => {
       if (err) {
         reject(err);
       } else {
         resObj.results = results;
-        resObj.results.forEach((result) => {
-          result['default?'] = Boolean(!!result.default_style);
-          delete result.default_style;
-        });
         resolve(resObj);
       }
     });
   });
-}
+};
 
 const getRelatedProducts = (id) => new Promise((resolve, reject) => {
   const relatedRes = [];
