@@ -3,7 +3,7 @@
 <img alt="Static Badge" src="https://img.shields.io/badge/Jest?style=flat-square&logo=jest&logoColor=white">
 
 
-# Hack Reactor, System Design Capston: Team Ganymede
+# Hack Reactor, System Design Capstone, Team Ganymede
 
 Products API Service
 

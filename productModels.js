@@ -3,7 +3,7 @@ const db = require('./database/index');
 const getProducts = (page = 0, count = 5) => new Promise((resolve, reject) => {
   count = Number(count);
   page = Number(page);
-  const query = `SELECT * FROM PRODUCTS LIMIT ? OFFSET ?`;
+  const query = `SELECT * FROM products LIMIT ? OFFSET ?`;
   db.query(query, [count, page], (err, results) => {
     if (err) {
       reject(err);
@@ -35,7 +35,7 @@ const getProductInfo = (id) => new Promise((resolve, reject) => {
 });
 
 
-const getStyles = (id) => {
+const getStyles2 = (id) => {
   const resObj = {
     product_id: `${id}`,
     results: []
@@ -93,6 +93,76 @@ const getRelatedProducts = (id) => new Promise((resolve, reject) => {
   });
 });
 
+const getSkus = (id, styleRes) => new Promise((resolve, reject) => {
+  const skus = {};
+
+  const query = `SELECT id, quantity, size FROM skus WHERE skus.product_id = ?`
+
+  db.query(query, [id], (err, results) => {
+    if (err) {
+      reject(err);
+    } else if (results.length > 0) {
+      results.forEach((result) => {
+        skus[result.id] = {
+          quantity: result.quantity,
+          size: result.size,
+        };
+      });
+    }
+
+    styleRes.results.forEach((result) => {
+      result.skus = skus;
+    });
+
+    resolve(styleRes);
+  });
+});
+
+const getPhotos = (id, skuResults) => new Promise((resolve, reject) => {
+  const styleIds = skuResults.results.map((item) => item.id);
+  const promises = [];
+
+  styleIds.forEach((item, index) => {
+    const query = `SELECT thumbnail_url, url FROM photos WHERE photos.style_id = ?`
+    const promise = new Promise((innerResolve, innerReject) => {
+      db.query(query, [id], (err, data) => {
+        if (err) {
+          innerReject(err);
+        } else {
+          skuResults.results[index].photos = data;
+          innerResolve();
+        }
+      });
+    });
+    promises.push(promise);
+  });
+
+  Promise.all(promises)
+    .then(() => {
+      resolve(skuResults);
+    })
+    .catch((err) => {
+      reject(err);
+    });
+});
+
+const getStyles = (id) => new Promise((resolve, reject) => {
+  const styleRes = {
+    product_id: id,
+    results: [],
+  };
+  const defaultCol = `default?`;
+  const query = `SELECT style_id, style_name, original_price, sale_price, ??, photos FROM styles WHERE styles.product_id = ?`
+  db.query(query, [defaultCol, id], (err, results) => {
+    if (err) {
+      reject(err);
+    } else {
+      styleRes.results = results;
+      resolve(styleRes);
+    }
+  });
+});
+
 module.exports = {
-  getProducts, getProductInfo, getStyles, getRelatedProducts,
+  getProducts, getProductInfo, getStyles2, getRelatedProducts, getSkus, getPhotos, getStyles,
 };
