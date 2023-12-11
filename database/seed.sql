@@ -11,7 +11,7 @@ FIELDS TERMINATED BY ','
 OPTIONALLY ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(product_id, item_name, slogan, item_description, category, default_price);
+(id, name, slogan, description, category, default_price);
 
 LOAD DATA LOCAL INFILE '/Users/malloryburke/hack/rfp2310/ganymede/Products-Service/database/data/features.csv'
 INTO TABLE features
@@ -27,7 +27,7 @@ FIELDS TERMINATED BY ','
 OPTIONALLY ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(id, product_id,style_name,sale_price,original_price,default_style);
+(style_id, product_id,style_name,sale_price,original_price,default_style);
 
 LOAD DATA LOCAL INFILE '/Users/malloryburke/hack/rfp2310/ganymede/Products-Service/database/data/photos.csv'
 INTO TABLE photos

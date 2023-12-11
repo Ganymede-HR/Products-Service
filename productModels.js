@@ -32,11 +32,12 @@ const getProductInfo = (id) => new Promise((resolve, reject) => {
       featureArr = results;
     })
     .then(() => {
-      const query = `SELECT * FROM products WHERE products.product_id = ?`;
+      const query = `SELECT * FROM products WHERE products.id = ?`;
       db.query(query, [id], (err, results) => {
         if (err) {
           reject(err);
         } else {
+          results[0].default_price = results[0].default_price.toString()
           results[0].features = featureArr;
           resolve(results[0]);
         }
@@ -103,11 +104,18 @@ const getStyles = (id) => new Promise((resolve, reject) => {
     results: [],
   };
 
-  const query = `SELECT id, style_name, original_price, sale_price, default_style, photos FROM styles WHERE styles.product_id = ?`
+  const query = `SELECT style_id, style_name, original_price, sale_price, default_style, photos FROM styles WHERE styles.product_id = ?`
   db.query(query, [id], (err, results) => {
     if (err) {
       reject(err);
     } else {
+      if (results.length > 0) {
+        results.forEach((result) => {
+          result.default_style = Boolean(!!result.default_style);
+          result['default?'] = result.default_style;
+          delete result.default_style;
+        });
+      }
       styleRes.results = results;
       resolve(styleRes);
     }
