@@ -39,7 +39,8 @@ const getStyles = (id) => {
   const resObj = {
     product_id: `${id}`,
     results: []
-  }
+  };
+
   return new Promise((resolve, reject) => {
     db.query(`
     SELECT
@@ -48,13 +49,19 @@ const getStyles = (id) => {
     s.original_price,
     s.sale_price,
     s.default_style,
-    JSON_ARRAYAGG(JSON_OBJECT('thumbnail_url', thumbnail_url, 'url', url)) AS photos
-    FROM styles AS s
-    LEFT JOIN (
-        SELECT style_id, thumbnail_url, url
+    (
+        SELECT JSON_ARRAYAGG(JSON_OBJECT('thumbnail_url', thumbnail_url, 'url', url))
         FROM photos
-    ) AS photos ON photos.style_id = s.style_id
-    WHERE s.product_id = 1
+        WHERE photos.style_id = s.style_id
+    ) AS photos,
+    (
+      SELECT JSON_OBJECTAGG(id, JSON_OBJECT('size', size, 'quantity', quantity))
+      FROM skus
+      WHERE skus.product_id = s.product_id
+    ) AS skus
+    FROM styles AS s
+    LEFT JOIN skus ON skus.product_id = s.product_id
+    WHERE s.product_id = ?
     GROUP BY s.style_id, s.style_name, s.original_price, s.sale_price, s.default_style;
     `, [id], (err, results) => {
       if (err) {
