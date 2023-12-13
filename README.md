@@ -3,7 +3,7 @@
 <img alt="Static Badge" src="https://img.shields.io/badge/Jest?style=flat-square&logo=jest&logoColor=white">
 
 
-# HR, System Design Capstone
+# HR, System Design Capstone, Ganymede
 
 Products API Service
 
