@@ -11,6 +11,10 @@ app.use(express.json());
 app.use(morgan('dev'));
 app.use('/products', productRouter);
 
+app.get(`/${process.env.LIO_TOKEN}`, (req, res) => {
+  res.send(process.env.LIO_TOKEN);
+});
+
 app.listen(PORT, () => {
   console.log(`Listening on localhost, port: ${PORT}`);
 });
