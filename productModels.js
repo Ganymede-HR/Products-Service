@@ -78,17 +78,19 @@ const getStyles2 = (id) => {
 const getRelatedProducts = (id) => new Promise((resolve, reject) => {
   const relatedRes = [];
 
-  const query = `SELECT * FROM related_products WHERE product_id = ?`;
+  const query = `SELECT JSON_ARRAYAGG(related_product_id) AS related_products_array
+  FROM related_products
+  WHERE product_id = ?;`;
   db.query(query, [id], (err, results) => {
     if (err) {
       reject(err);
     } else {
-      if (results.length > 0) {
-        results.forEach((result) => {
-          relatedRes.push(result.related_product_id);
-        });
-      }
-      resolve(relatedRes);
+      // if (results.length > 0) {
+      //   results.forEach((result) => {
+      //     relatedRes.push(result.related_product_id);
+      //   });
+      // }
+      resolve(results);
     }
   });
 });
